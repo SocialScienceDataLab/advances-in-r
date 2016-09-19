@@ -5,11 +5,12 @@
 **Summary**
 
 This one-day course is set out to improve your R skills and make you a more efficient programmer. In particular, you will:
-	- understand complex data types and how to work with them
-	- understand what functional programming means
-	- learn about metaprogramming
-	- be able to identify performance bottlenecks and convert slow R functions to fast C++ equivalents
-	- get better at reading other's R code
+
+* understand complex data types and how to work with them
+* understand what functional programming means
+* learn about metaprogramming
+* be able to identify performance bottlenecks and convert slow R functions to fast C++ equivalents
+* get better at reading other's R code
 
 **Event**
 
