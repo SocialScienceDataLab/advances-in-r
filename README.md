@@ -11,6 +11,7 @@ This one-day course is set out to improve your R skills and make you a more effi
 * learn about metaprogramming
 * be able to identify performance bottlenecks and convert slow R functions to fast C++ equivalents
 * get better at reading other's R code
+* learn to improve your data processing workflow with new and popular convenience packages, such as magrittr, dplyr, and tidyr
 
 **Event**
 
@@ -28,9 +29,9 @@ Simon Munzert ([website](https://simonmunzert.github.io), [Twitter](https://twit
 
 Working knowledge of R is a necessary prerequisite. You're assumed to be familiar with fundamentals such as how to operate with different object types in R, how to work with the apply family (apply(), sapply() etc.), and how to program your own basic functions. 
 
-Are you prepared for taking this course? Take a look at the basic R vocabulary listed [here](http://adv-r.had.co.nz/Vocabulary.html). Are you aware of at least 60% to 80% of the functions? Then you're prepared. 
+Are you prepared for taking this course? Take a look at the basic R vocabulary listed [here](http://adv-r.had.co.nz/Vocabulary.html). Are you aware of at least 60% to 80% of the functions? Then you're prepared. I plan to conduct a poll with participants before the workshop takes place to determine which topics you're already familiar with and which should be covered.
 
 **Resources**
 
-The course closely follows Hadley Wickhams "Advanced R" book. A free version of the book is available [here](http://adv-r.had.co.nz/); a physical chopy can be purchased [here](https://www.amazon.de/Advanced-Chapman-Hall-Hadley-Wickham/dp/1466586966).
+The course loosely follows Hadley Wickhams "Advanced R" book. A free version of the book is available [here](http://adv-r.had.co.nz/); a physical chopy can be purchased [here](https://www.amazon.de/Advanced-Chapman-Hall-Hadley-Wickham/dp/1466586966).
 
