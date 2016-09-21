@@ -33,5 +33,5 @@ Are you prepared for taking this course? Take a look at the basic R vocabulary l
 
 **Resources**
 
-The course loosely follows Hadley Wickhams "Advanced R" book. A free version of the book is available [here](http://adv-r.had.co.nz/); a physical chopy can be purchased [here](https://www.amazon.de/Advanced-Chapman-Hall-Hadley-Wickham/dp/1466586966).
+The course loosely follows Hadley Wickhams "Advanced R" book. A free version of the book is available [here](http://adv-r.had.co.nz/); a physical copy can be purchased [here](https://www.amazon.de/Advanced-Chapman-Hall-Hadley-Wickham/dp/1466586966).
 
