@@ -1,4 +1,4 @@
-# Advanced R
+# Advanced R and Recent Advances in R
 
 ## General information
 
