@@ -55,6 +55,9 @@ browseURL("https://github.com/sfirke/janitor") # worth a look if you have to dea
 
 ## tidying data frames with tidyr ----------------
 
+https://www.r-bloggers.com/how-to-reshape-data-in-r-tidyr-vs-reshape2/
+  https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html
+
 # Hadley Wickham's paper on tidy data:
 browseURL("https://www.jstatsoft.org/article/view/v059i10")
 

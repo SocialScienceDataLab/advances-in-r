@@ -10,9 +10,6 @@ source("00-course-setup.r")
 wd <- getwd()
 
 
-## ALSO DISCUSS do() function of dplyr!
-
-
 ## manipulating data frames with dplyr ----------
 
 # dplyr, by Hadley Wickham, provides a flexible grammar of data manipulation
@@ -118,27 +115,13 @@ browseURL("https://github.com/Rdatatable/data.table/wiki")
   # b) Arrived more than two hours late, but didn't leave late
   # c) have a missing dep_time - and speculate why this might be the case by looking at other variables.
 
-filter(dat, arr_delay >= 120) %>% dim
-filter(dat, arr_delay >= 120, dep_delay <= 0) %>% dim
-filter(dat, is.na(dep_time)) %>% View
-
 # 2. Which flights travelled longest, which shortest?
-arrange(dat, air_time) %>% head
-arrange(dat, desc(air_time)) %>% head
 
 # 3. Does the result of running the following code surprise you? If no, explain! If yes, figure out why the output looks how it looks!
 select(dat, contains("TIME")) %>% View
 
 # 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Have a look at ?min_rank and ?rank first!
-mutate(dat, delay_rank = min_rank(desc(arr_delay))) %>% arrange(arr_delay) %>% View
 
 # 5. Which carrier has the worst delays, which ranks best?
 
-dat %>% group_by(carrier) %>% summarize(mean_delay = mean(arr_delay, na.rm = TRUE)) %>% arrange(mean_delay)
-table(dat$carrier)
-flights %>% group_by(carrier) %>% summarise(n_flights = n())
-
 # 6. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
-foo <- arrange(dat, year, month, day, dep_time) %>% mutate(prev_delay = lag(dep_delay))
-plot(foo$dep_delay, foo$prev_delay)
-lm(dep_delay ~ prev_delay, data = foo) %>% summary()

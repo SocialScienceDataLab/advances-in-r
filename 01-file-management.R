@@ -1,6 +1,6 @@
 ### -----------------------------
-## advanced R & recent advances in R
-## simon munzert
+### advanced R & recent advances in R
+### simon munzert
 ### -----------------------------
 
 
@@ -28,6 +28,7 @@ dir.create("data")
 
 # get all pre-compiled data sets
 dat <- as.data.frame(data(package = "datasets")$results)
+dat$Item %<>% str_replace(" \\(.+\\)", "")
 
 # store data sets in local folder
 for (i in 1:50) {
@@ -49,6 +50,7 @@ dir.exists("data")
 ?files
 
 # get basename (= returns the lowest level in a path)
+filenames
 basename(filenames)
 url <- "http://www.mzes.uni-mannheim.de/d7/en/news/media-coverage/ist-die-wahlforschung-in-der-krise-der-undurchschaubare-buerger"
 browseURL(url)

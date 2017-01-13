@@ -155,7 +155,7 @@ browseURL("http://stackoverflow.com/questions/201323/using-a-regular-expression-
 
 # stringr is built on top of the stringi package. 
 # stringr is convenient because it exposes a minimal set of functions, which have been carefully picked to handle the most common string manipulation functions. 
-# stringi is designed to be comprehensive. It contains almost every function you might ever need: stringi has 234 functions to stringr's 42
+# stringi is designed to be comprehensive. It contains almost every function you might ever need: stringi has 234 functions (compare that to stringr's 42)
 # packages work very similarly; translating knowledge is easy (try stri_ instead of str_)
 
 ?stri_count_words

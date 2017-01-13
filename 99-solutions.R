@@ -47,7 +47,7 @@ zip("data/cses-pdfs/cses-mod4-questionnaires.zip", dir("data/cses-pdfs", full.na
 
 
 
-## 02-functions ---------------------------
+## 03-functions ---------------------------
 
 # program a function ultimateAnswer() that always returns the number 42!
 ultimateAnswer <- function(x) {42}
@@ -61,6 +61,15 @@ normalize <- function(x, na.rm = FALSE) {
 vec <- c(1, 5, 10, NA)
 normalize(vec, na.rm = TRUE) %>% summary
 normalize(vec, na.rm = TRUE) %>% sd(na.rm = TRUE)
+
+# use sapply() and an anonymous function to find the coefficient of variation for all variables in the mtcars dataset!
+sapply(mtcars, function(x) sd(x)/mean(x))
+
+# use integrate and an anonymous function to find the area under the curve for the following functions:
+# a) y = x ^ 2 - x, x in [0, 10]
+# b) y = sin(x) + cos(x), x in [-pi, pi]
+integrate(function(x) x^2 - x, lower = 0, upper = 10)
+integrate(function(x) sin(x) + cos(x), lower = -pi, upper = pi)
 
 
 # try to inspect the source code of the summary function when applied to a data.frame object.
@@ -117,7 +126,7 @@ vec1 %<>% vec2
 
 
 
-## 01-string-processing ---------------------------
+## 05-string-processing ---------------------------
 
 ## 1. describe the types of strings that conform to the following regular expressions and construct an example that is matched by the regular expression.
 str_extract_all("Phone 150$, PC 690$", "[0-9]+\\$") # example
@@ -134,3 +143,76 @@ str_extract_all(c("<br>laufen</br>", "<title>Cameron wins election</title>"), "<
 email <- "chunkylover53[at]aol[dot]com"
 email_new <- email %>% str_replace("\\[at\\]", "@") %>% str_replace("\\[dot\\]", ".")
 str_extract(email_new, "[:digit:]+")
+
+
+
+## 06-manipulating-data-frames ---------------------------
+
+# 1. Find all flights that 
+# a) Had an arrival delay of two or more hours
+# b) Arrived more than two hours late, but didn't leave late
+# c) have a missing dep_time - and speculate why this might be the case by looking at other variables.
+
+filter(dat, arr_delay >= 120) %>% dim
+filter(dat, arr_delay >= 120, dep_delay <= 0) %>% dim
+filter(dat, is.na(dep_time)) %>% View
+
+# 2. Which flights travelled longest, which shortest?
+arrange(dat, air_time) %>% head
+arrange(dat, desc(air_time)) %>% head
+
+# 3. Does the result of running the following code surprise you? If no, explain! If yes, figure out why the output looks how it looks!
+select(dat, contains("TIME")) %>% View
+
+# 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Have a look at ?min_rank and ?rank first!
+mutate(dat, delay_rank = min_rank(desc(arr_delay))) %>% arrange(arr_delay) %>% View
+
+# 5. Which carrier has the worst delays, which ranks best?
+
+dat %>% group_by(carrier) %>% summarize(mean_delay = mean(arr_delay, na.rm = TRUE)) %>% arrange(mean_delay)
+table(dat$carrier)
+flights %>% group_by(carrier) %>% summarise(n_flights = n())
+
+# 6. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
+foo <- arrange(dat, year, month, day, dep_time) %>% mutate(prev_delay = lag(dep_delay))
+plot(foo$dep_delay, foo$prev_delay)
+lm(dep_delay ~ prev_delay, data = foo) %>% summary()
+
+
+## 07-split-apply-combine ---------------------------
+
+# 1. Below is a function that scales a vector so it falls in the range [0,1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column of a data frame? Try to come up with solutions using both base R and plyr functions. Use the data.frames mtcars and iris as examples.
+scale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1]) 
+}
+vec <- runif(10, 0, 10)
+scale01(vec)
+
+# base R
+df <- mtcars
+df[] <- lapply(df, scale01) # or:
+df <- lapply(df, scale01) %>% as.data.frame
+
+df <- iris
+df_num <- sapply(df, is.numeric)
+df[df_num] <- lapply(df[df_num], scale01) 
+
+# plyr
+df <- mtcars
+df[] <- llply(df, scale01) 
+
+df <- iris
+numcolwise(scale01)(df)
+ddply(df, .(), numcolwise(scale01))
+
+
+
+# 2. Fit the model mpg ~ disp to each of the bootstrap replicates of mtcars in the list below using no more than one line of code.
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows,] 
+})
+
+models_out <- lapply(bootstraps, function(x) {lm(mpg ~ disp, data = x)})
+

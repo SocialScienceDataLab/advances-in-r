@@ -10,6 +10,7 @@ source("00-course-setup.r")
 wd <- getwd()
 
 
+
 ## debugging ----------------------
 
 # when you write code, things will inevitably go wrong at some point
@@ -34,23 +35,82 @@ wd <- getwd()
 # 3. figure out where it is
 # 4. fix it and test it
 
+
 ## debugging tools --------------
+# inspired by [https://goo.gl/ofIibl]
 
-# there are tools provided by R and other by the RStudio IDE
-# for the latter, see 
-browseURL("http://www.rstudio.com/ide/docs/debugging/overview")
+# Calculates the geodesic distance between two points specified by radian latitude/longitude using the Haversine formula (hf); taken from [https://goo.gl/GezNGB]
+geod_dist <- function(lat1, lon1, lat2, lon2, earth.radius = 6371) {
+  # from degrees to radians
+  deg2rad <- function(deg) return(deg*pi/180)
+  lon1 <- deg2rad(lon1)
+  lat1 <- deg2rad(lat1)
+  lon2 <- deg2rad(long2)
+  lat2 <- deg2rad(lat2)
+  # calculation
+  delta.long <- (lon2 - lon1)
+  delta.lat <- (lat2 - lat1)
+  a <- sin(delta.lat/2)^2 + cos(lat1) * cos(lat2) * sing(delta.long/2)^2
+  c <- 2 * asin(min(1,sqrt(a)))
+  d = earth_radius * c
+  return(d)
+}
 
-# determining the sequence of calls
-f <- function(a) g(a) 
-g <- function(b) h(b) 
-h <- function(c) i(c) 
-i <- function(d) "a" + d 
-f(10)
+# distance between Mannheim and Berlin
+geod_dist(lat1 = 49.5, lon1 = 8.4, lat2 = 52.5, lon2 = 13.4)
 
-traceback() # this shows you where the error occurred, but not why
 
-# browsing on error
-# ???
+## solution 1: trial and error
+# if you see the error right away, fix it
+
+
+## solution 2: make your function global
+# turn the arguments into global objects
+# step through the code
+
+lat1 = 49.5; lon1 = 8.4; lat2 = 52.5; lon2 = 13.4
+
+deg2rad <- function(deg) return(deg*pi/180)
+lon1 <- deg2rad(lon1)
+lat1 <- deg2rad(lat1)
+lon2 <- deg2rad(long2)
+lat2 <- deg2rad(lat2)
+delta.long <- (lon2 - lon1)
+delta.lat <- (lat2 - lat1)
+a <- sin(delta.lat/2)^2 + cos(lat1) * cos(lat2) * sing(delta.long/2)^2
+c <- 2 * asin(min(1,sqrt(a)))
+d = earth_radius * c
+return(d)
+
+# problem with this solution: creates global objects that match arguments names, can become confusing and cause problems that become obvious when the function is called in a different environment
+
+
+## solution 3: use traceback()
+# this shows you where the error occurred, but not why
+geod_dist(lat1 = 49.5, lon1 = 8.4, lat2 = 52.5, lon2 = 13.4)
+traceback()
+
+
+## solution 3: use browser()
+geod_dist <- function(lat1, lon1, lat2, lon2, earth.radius = 6371) {
+  # from degrees to radians
+  browser()
+  deg2rad <- function(deg) return(deg*pi/180)
+  lon1 <- deg2rad(lon1)
+  lat1 <- deg2rad(lat1)
+  lon2 <- deg2rad(lon2)
+  lat2 <- deg2rad(lat2)
+  # calculation
+  delta.long <- (lon2 - lon1)
+  delta.lat <- (lat2 - lat1)
+  a <- sin(delta.lat/2)^2 + cos(lat1) * cos(lat2) * sing(delta.long/2)^2
+  c <- 2 * asin(min(1,sqrt(a)))
+  d = earth_radius * c
+  return(d)
+}
+geod_dist(lat1 = 49.5, lon1 = 8.4, lat2 = 52.5, lon2 = 13.4)
+# you can now work through the function line by line by hitting enter in the console or send additional lines of code
+
 
 
 ## condition handling --------------
