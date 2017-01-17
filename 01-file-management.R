@@ -25,6 +25,7 @@ wd <- getwd()
 
 (current_folder <- getwd())
 dir.create("data")
+dir.create("data/r-data")
 
 # get all pre-compiled data sets
 dat <- as.data.frame(data(package = "datasets")$results)
@@ -33,14 +34,14 @@ dat$Item %<>% str_replace(" \\(.+\\)", "")
 # store data sets in local folder
 for (i in 1:50) {
   try(df_out <- dat$Item[i] %>% as.character %>% get)
-  save(df_out, file = paste0("data/", dat$Item[i], ".RData"))
+  save(df_out, file = paste0("data/r-data/", dat$Item[i], ".RData"))
 }
 
 # inspect folder
-dir("data")
-filenames <- dir("data", full.names = TRUE)
-dir("data", pattern = "US")
-dir("data", pattern = "US", ignore.case = TRUE)
+dir("data/r-data")
+filenames <- dir("data/r-data", full.names = TRUE)
+dir("data/r-data", pattern = "US")
+dir("data/r-data", pattern = "US", ignore.case = TRUE)
 
 # check if folder exists
 dir.exists("data")
@@ -96,13 +97,6 @@ file.remove("copy.rdata")
 tempfile()
 tempdir()
 
-# normalize paths
-normalizePath(c(R.home(), tempdir()))
-normalizePath(c(R.home(), tempdir()), winslash = '/')
-
-# expand file paths
-path.expand("~/data")
-
 
 
 
@@ -131,3 +125,71 @@ survey_pdfs <- str_subset(page_links, "/survey")
 
 
 
+## importing rectangular spreadsheet data --------------
+
+library(readr)
+dir.create("data/spreadsheets")
+readr_example("mtcars.csv")
+
+# import and export comma-delimited files
+mtcars <- read_csv(readr_example("mtcars.csv"))
+head(mtcars)
+write_csv(mtcars, "data/spreadsheets/mtcars-comma.csv")
+
+# modify column type if desired
+mtcars <- read_csv(readr_example("mtcars.csv"), col_types = 
+                     cols(
+                       mpg = col_character(),
+                       cyl = col_integer(),
+                       disp = col_double(),
+                       hp = col_integer(),
+                       drat = col_double(),
+                       vs = col_integer(),
+                       wt = col_double(),
+                       qsec = col_double(),
+                       am = col_integer(),
+                       gear = col_integer(),
+                       carb = col_integer()
+                     )
+)
+
+# more info on column types
+vignette("column-types")
+
+# import and export semi-colon delimited files (Germans!)
+write_delim(mtcars, delim = ";", path = "data/spreadsheets/mtcars-semicolon.csv")
+mtcars <- read_csv2("data/spreadsheets/mtcars-semicolon.csv")
+head(mtcars)
+
+# other functions
+read_fwf()
+read_tsv()
+
+# why readr, not base R?
+  # readr is much faster (up to 10x)
+  # strings remain strings by default
+  # automatically parse common date/time formats
+  # progress bar if needed
+
+
+## importing SPSS and Stata files (SAS, too) --------------
+
+library(haven)
+dir.create("data/stata-spss")
+
+# Stata
+write_dta(mtcars, "data/stata-spss/mtcars.dta")
+mtcars_stata <- read_dta("data/stata-spss/mtcars.dta")
+
+# SPSS
+write_sav(mtcars, "data/stata-spss/mtcars.sav")
+mtcars_spss <- read_sav("data/stata-spss/mtcars.sav")
+
+# why not functions from foreign package?
+lifeexp <- read.dta("data/stata-spss/lifeexp.dta") # data exported with Stata 14
+lifeexp <- read_dta("data/stata-spss/lifeexp.dta") 
+head(lifeexp)
+View(lifeexp)
+sapply(lifeexp, class)
+table(lifeexp$region)
+table(as_factor(lifeexp$region))

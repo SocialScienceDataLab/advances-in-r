@@ -55,9 +55,6 @@ browseURL("https://github.com/sfirke/janitor") # worth a look if you have to dea
 
 ## tidying data frames with tidyr ----------------
 
-https://www.r-bloggers.com/how-to-reshape-data-in-r-tidyr-vs-reshape2/
-  https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html
-
 # Hadley Wickham's paper on tidy data:
 browseURL("https://www.jstatsoft.org/article/view/v059i10")
 
@@ -69,41 +66,103 @@ browseURL("https://www.jstatsoft.org/article/view/v059i10")
   # each observation must have its own row
   # each value must have its own cell
 
-# several ways of organizing data...
+# related to reshape2 and reshape, although tidyr is not designed for general reshaping
+  # gather() ~ melt() 
+      # --> takes multiple columns and gathers them into key-value pairs 
+      # --> wide to long
+  # spread() ~ cast() 
+      # --> takes two columns (key and value) and spreads in to multiple columns 
+      # --> long to wide
 
-# already tidy
-table1
+# additional functions:
+  # separate()
+      # --> pull apart a column that represents multiple variables
+  # unite()
+      # complement to separate()
 
-table1 %>% mutate(rate = cases / population * 10000)
-table1 %>% count(year, wt = cases)
+# example: gather()
+  # demo("so-17481212")
+race <- read.table(header = TRUE, check.names = FALSE, text = "
+  Name    50  100  150  200  250  300  350
+  Carla  1.2  1.8  2.2  2.3  3.0  2.5  1.8
+  Mace   1.5  1.1  1.9  2.0  3.6  3.0  2.5
+  Lea    1.7  1.6  2.3  2.7  2.6  2.2  2.6
+  Karen  1.3  1.7  1.9  2.2  3.2  1.5  1.9
+")
+race
+race_long <- gather(race, key = Time, value = Score, -Name, convert = TRUE) 
+race_long
+race_long %>% arrange(Name, Time)
+
+# example: spread()
+  # demo("so-16032858")
+results <- data.frame(
+  Ind = paste0("Ind", 1:10),
+  Treatment = rep(c("Treat", "Cont"), each = 10),
+  value = 1:20
+  )
+results
+spread(results, key = Treatment, value = value)
+
+# example: separate()
+df <- data.frame(x = c(NA, "a.b", "a.d", "b.c"))
+df %>% separate(x, c("A", "B"))
+df %>% separate(x, c("A", "B"), sep = -2)
+df %>% separate(x, c("A", "B"), sep = "\\.")
+
+# example 2: separate() - every row doesn't split into the same number of pieces
+df <- data.frame(x = c("a", "a b", "a b c", NA))
+df %>% separate(x, c("a", "b"))
+# the same behaviour but no warnings, fill with missing values on specified side
+df %>% separate(x, c("a", "b"), extra = "drop", fill = "right")
+df %>% separate(x, c("a", "b"), extra = "drop", fill = "left")
+# do not drop extra pieces, only splits at most length(into) times
+df %>% separate(x, c("a", "b"), extra = "merge", fill = "right")
+df %>% separate(x, c("a", "b", "c"), extra = "merge", fill = "right")
+
+# example: separate_rows()
+df <- data.frame(
+  x = 1:3,
+  y = c("a", "d,e,f", "g,h"),
+  z = c("1", "2,3,4", "5,6"),
+  stringsAsFactors = FALSE
+)
+df
+separate_rows(df, y, z, convert = TRUE)
+
+# example: unite()
+df <- data.frame(
+  country = rep(c("Afghan", "Brazil", "China"), each = 2),
+  century = rep(c("19", "20"), 3),
+  year = rep(c("99", "00"), 3),
+  stringsAsFactors = FALSE
+)
+df
+unite(df, century, year, col = "year", sep = "")
+
+# example: gather() + separate() + spread()
+# demo("dadmom")
+
+dadmom <- read_dta("http://www.ats.ucla.edu/stat/stata/modules/dadmomw.dta")
+dadmom # 3+1 variables in 5 columns
+
+dadmom %>% gather(key, value, named:incm)
+
+dadmom %>% gather(key, value, named:incm) %>%
+           separate(key, c("variable", "type"), -2) 
+
+dadmom %>% gather(key, value, named:incm) %>%
+           separate(key, c("variable", "type"), -2) %>%
+           spread(variable, value, convert = TRUE)
 
 
-table2
-
-table3
-
-# column names represent variable values (year); each row represents two observations, not one
-table4a
-
-
-table4b
-
-# getting rid of observations scattered across multiple rows with spread(), a.k.a. moving from long to wide format
-(tidy2 <- table2 %>% spread(key = type, value = count))
-
-
-# getting rid of values in variable names with gather() a.k.a moving from wide to long format
-(tidy4a <- table4a %>% gather(`1999`, `2000`, key = "year", value = "cases"))
-(tidy4b <- table4b %>% gather(`1999`, `2000`, key = "year", value = "population"))
-left_join(tidy4a, tidy4b)
-
-
-
-
-# reshaping with tidyr in one slide
-browseURL("https://twitter.com/FrederikAust/status/789101346595151872/photo/1")
-
-
+## handling missing values
+df <- data.frame(y = LETTERS[1:6], x = c(1, NA, NA, 3, NA, 4))
+df
+drop_na(df)
+fill(df, x, .direction = "up")
+replace_na(df, list(x = 2))
+fill(df)
 
 
 

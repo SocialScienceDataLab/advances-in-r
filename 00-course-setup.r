@@ -5,7 +5,9 @@
 
 
 # install packages from CRAN
-p_needed <- c("plyr", # for consistent split-apply-combine functionality
+p_needed <- c("readr", # imports spreadsheet data
+              "haven", # imports SPSS, Stata and SAS files
+              "plyr", # for consistent split-apply-combine functionality
               "dplyr",  # provides data manipulating functions
               "stringr", # for string processing
               "stringi", # more tools for string processing
